@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Service pour PostgreSQL
+  my_postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "2345:5432"  # Port externe pour PostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+
+  # Service pour l'application Python (ETL)
+  python_etl:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://user:password@my_postgres:5432/mydatabase  # URL de connexion à la base
+    depends_on:
+      - my_postgres  # S'assurer que PostgreSQL est démarré avant le service python_etl
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  postgres_data:

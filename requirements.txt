@@ -1,0 +1,4 @@
+pandas==2.2.3
+psycopg2==2.9.10
+SQLAlchemy==2.0.38
+streamlit==1.43.1
